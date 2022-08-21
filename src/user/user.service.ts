@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Error, Model } from "mongoose";
+import { Model } from "mongoose";
 import { createUserDto } from "src/dto/createUser.dto";
 import { UpdateUserDto } from "src/dto/updateUserDto";
 import { User, UserDocument } from "./schemas/user.schema";
@@ -28,10 +28,19 @@ export class UserService {
     const user = await this.userModel.findOne({ email }).exec();
     return user ? (user.toJSON() as User) : null;
   }
-  update(id: string, changes: UpdateUserDto) {
-    delete changes.id;
-    return this.userModel.findByIdAndUpdate(id, changes, {
+  async update(id: string, changes: UpdateUserDto) {
+    const updated = {};
+    if (changes.newName) updated["name"] = changes.newName;
+    if (changes.newPassword)
+      updated["password"] = await bycript.hash(changes.newPassword, 10);
+    if (changes.newEmail) updated["email"] = changes.newEmail;
+
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, updated, {
       returnOriginal: false,
     });
+    console.log(updatedUser);
+
+    const { password, __v, ...rta } = updatedUser.toJSON();
+    return rta;
   }
 }

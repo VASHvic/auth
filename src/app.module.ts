@@ -9,13 +9,13 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
   imports: [
+    UserModule,
     AuthModule,
     ConfigModule.forRoot({
       envFilePath: ".env",
       load: [config],
       isGlobal: true,
     }),
-    UserModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

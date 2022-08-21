@@ -1,3 +1,3 @@
 # TODO
 
-- cambiar acces a la bd despues de desplegar
+- Mirar duplicats y erros en mongoose
