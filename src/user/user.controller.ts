@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  BadRequestException,
 } from "@nestjs/common";
 import { Public } from "src/auth/decorators/public.decorator";
 import { ApiKeyGuard } from "src/auth/guards/api-key.guard";
@@ -40,12 +41,20 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Patch("update")
   public async updateUser(@Body() dto: UpdateUserDto): Promise<any> {
-    return this.userService.update(dto.id, dto);
+    return this.userService.update(dto);
   }
 
   @Post("signUp")
   @Public()
   public async signUp(@Body() dto: createUserDto) {
-    return this.userService.signUp(dto);
+    const result = await this.userService.signUp(dto).catch(
+      (e) =>
+        e.code === 11000 && {
+          error: `A User with ${Object.entries(e.keyValue)
+            .join()
+            .replace(",", ":")} already exists`,
+        },
+    );
+    return result;
   }
 }
