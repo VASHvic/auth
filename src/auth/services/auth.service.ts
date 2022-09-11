@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { User } from "src/user/schemas/user.schema";
 import { UserService } from "src/user/user.service";
-import { PayloadToken } from "../types/teypes";
+import { PayloadToken, SafeUserType, UserType } from "../types/types";
 
 @Injectable()
 export class AuthService {
@@ -17,10 +17,11 @@ export class AuthService {
     if (!user) return null;
     const isMatch = await bcrypt.compare(password, user.password);
     delete user.password;
+    delete user.__v;
     return isMatch ? user : null;
   }
 
-  generateJWT(user: User & { _id: string }) {
+  generateJWT(user: SafeUserType) {
     const payload: PayloadToken = { sub: user._id };
     return {
       access_token: this.jwtService.sign(payload),
