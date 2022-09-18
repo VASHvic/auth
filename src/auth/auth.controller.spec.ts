@@ -1,39 +1,44 @@
-import { PassportModule } from "@nestjs/passport";
-import { UserModule } from "../user/user.module";
 import { AuthService } from "./services/auth.service";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { AuthController } from "./auth.controller";
-import { JwtModule } from "@nestjs/jwt";
-import { ConfigType } from "@nestjs/config";
-import config from "../config";
 import { JWTStrategy } from "./strategies/jwt.strategy";
 import { Test, TestingModule } from "@nestjs/testing";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { UserService } from "src/user/user.service";
+import { JwtService } from "@nestjs/jwt";
+import { getModelToken } from "@nestjs/mongoose";
+import { User, UserDocument } from "src/user/schemas/user.schema";
+import { Model } from "mongoose";
 
 describe("AuthController", () => {
   let controller: AuthController;
+  let authService: AuthService;
+  let mockUserModel: Model<UserDocument>;
 
   beforeAll(async () => {
+    const mock_localAuthGuard = { canActivate: jest.fn(() => true) };
+
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        UserModule,
-        PassportModule,
-        JwtModule.registerAsync({
-          inject: [config.KEY],
-          useFactory: (configService: ConfigType<typeof config>) => {
-            return {
-              secret: configService.jwtSecret,
-              signOptions: {
-                expiresIn: configService.jwtExpiration,
-              },
-            };
-          },
-        }),
+      providers: [
+        AuthService,
+        UserService,
+        JwtService,
+        {
+          provide: getModelToken(User.name),
+          useValue: Model, // <-- Use the Model Class from Mongoose
+        },
       ],
       controllers: [AuthController],
-      providers: [AuthService, LocalStrategy, JWTStrategy],
-    }).compile();
+    })
+      .overrideGuard(LocalAuthGuard)
+      .useValue(mock_localAuthGuard)
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
+    authService = module.get<AuthService>(AuthService);
+    mockUserModel = module.get<Model<UserDocument>>(getModelToken(User.name));
+
+    jest.clearAllMocks();
   });
 
   it("should be defined", () => {

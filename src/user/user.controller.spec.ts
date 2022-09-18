@@ -18,7 +18,7 @@ describe("UserController", () => {
         UserService,
         {
           provide: getModelToken(User.name),
-          useValue: Model, // <-- Use the Model Class from Mongoose
+          useValue: Model,
         },
       ],
       controllers: [UserController],

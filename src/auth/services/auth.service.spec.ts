@@ -1,13 +1,8 @@
-import { ConfigModule, ConfigService, ConfigType } from "@nestjs/config";
-import { JwtModule, JwtService } from "@nestjs/jwt";
-import { getModelToken, MongooseModule } from "@nestjs/mongoose";
-import { PassportModule } from "@nestjs/passport";
+import { JwtService } from "@nestjs/jwt";
+import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Model } from "mongoose";
-import { AppModule } from "src/app.module";
-import config from "src/config";
-import { User, UserDocument, UserSchema } from "src/user/schemas/user.schema";
-import { UserModule } from "src/user/user.module";
+import { User, UserDocument } from "src/user/schemas/user.schema";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 
