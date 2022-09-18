@@ -9,7 +9,7 @@ import { ConfigType } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 import { Observable } from "rxjs";
-import config from "src/config";
+import config from "../../config";
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {

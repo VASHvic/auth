@@ -8,13 +8,13 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { Public } from "src/auth/decorators/public.decorator";
-import { ApiKeyGuard } from "src/auth/guards/api-key.guard";
-import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
-import { SafeUserType } from "src/auth/types/types";
-import { MongoIdPipe } from "src/common/mongo-id.pipe";
-import { createUserDto } from "src/dto/createUser.dto";
-import { UpdateUserDto } from "src/dto/updateUserDto";
+import { Public } from "../auth/decorators/public.decorator";
+import { ApiKeyGuard } from "../auth/guards/api-key.guard";
+import { LocalAuthGuard } from "../auth/guards/local-auth.guard";
+import { SafeUserType } from "../auth/types/types";
+import { MongoIdPipe } from "../common/mongo-id.pipe";
+import { createUserDto } from "../dto/createUser.dto";
+import { UpdateUserDto } from "../dto/updateUserDto";
 import { User } from "./schemas/user.schema";
 import { UserService } from "./user.service";
 
@@ -24,7 +24,7 @@ export class UserController {
 
   @UseGuards(ApiKeyGuard)
   @Get("get")
-  public async getHello(): Promise<User[]> {
+  public async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
   @UseGuards(ApiKeyGuard)

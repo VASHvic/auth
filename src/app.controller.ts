@@ -1,7 +1,11 @@
-import { Controller, UseGuards } from "@nestjs/common";
-import { ApiKeyGuard } from "./auth/guards/api-key.guard";
+import { Controller, Get } from "@nestjs/common";
 
-@Controller()
+@Controller("/")
 export class AppController {
   constructor() {}
+
+  @Get("/hello")
+  public getHello() {
+    return "Hello World!";
+  }
 }
