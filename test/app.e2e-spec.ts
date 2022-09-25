@@ -8,7 +8,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
-  let r = (Math.random() + 1).toString(36).substring(7);
+  let randomUser = (Math.random() + 1).toString(36).substring(7);
 
   jest.setTimeout(120000);
   beforeEach(async () => {
@@ -44,19 +44,24 @@ describe("AppController (e2e)", () => {
     return request(app.getHttpServer())
       .post("/user/signup")
       .send({
-        name: r,
-        email: `${r}@mail.com`,
-        password: `${r}`,
+        name: randomUser,
+        email: `${randomUser}@mail.com`,
+        password: `${randomUser}`,
       })
       .expect(201);
   });
   it("/user/signup (GET)", () => {
+    const path = "/user/getByEmail/" + randomUser + "@mail.com";
+    console.log(path);
+
     return request(app.getHttpServer())
-      .get(`/user/getbyemail/v@mail.com`)
+      .get(path)
       .set("Auth", "abc")
       .expect(200);
     //TODO: tornar resposta sencera
   });
+
+  //afegir delete user
 
   afterAll(async () => {
     await app.close();

@@ -22,6 +22,7 @@ import { UserService } from "./user.service";
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // No te molt de sentit
   @UseGuards(ApiKeyGuard)
   @Get("get")
   public async findAll(): Promise<User[]> {
@@ -34,6 +35,8 @@ export class UserController {
   ): Promise<User> {
     return this.userService.findById(id);
   }
+
+  // no te molt de sentit, si ho lleve, llevar tmb el indice en mongo
   @UseGuards(ApiKeyGuard)
   @Get("getByEmail/:email")
   public async getUserByEmail(

@@ -1,0 +1,21 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - "test"
+      - "master"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: npm i
+      - name: unit test
+        run: npm run test
+      - name: e2e test
+        run: npm run test:2e2

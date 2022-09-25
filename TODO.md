@@ -6,7 +6,7 @@
 
 ## ex
 
-- fer tests e2e y unitaris
+- afegir tests e2e y unitaris
 - acabar de mirar retornos
 - posarli fastify ( problemes de versió, crec que per passport, deixar per a més avant)
 - Error service
