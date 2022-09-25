@@ -16,11 +16,15 @@ import { MongoIdPipe } from "../common/mongo-id.pipe";
 import { createUserDto } from "../dto/createUser.dto";
 import { UpdateUserDto } from "../dto/updateUserDto";
 import { User } from "./schemas/user.schema";
+import { UserErrorService } from "./user-error.service";
 import { UserService } from "./user.service";
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userErrorService: UserErrorService,
+  ) {}
 
   // No te molt de sentit
   @UseGuards(ApiKeyGuard)
@@ -64,7 +68,9 @@ export class UserController {
           e.keyValue,
         )} already exists`;
       }
-      throw new BadRequestException(errorMesage ?? "Unknow Error");
+      const error = new BadRequestException(errorMesage ?? "Unknow Error");
+      await this.userErrorService.saveError(error);
+      throw error;
     }
   }
 }
