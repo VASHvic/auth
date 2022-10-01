@@ -40,7 +40,7 @@ describe("AppController (e2e)", () => {
       .set("Auth", "abc")
       .expect(200);
   });
-  it("/user/signup (POST)", () => {
+  it("create a user /user/signup (POST)", () => {
     return request(app.getHttpServer())
       .post("/user/signup")
       .send({
@@ -50,15 +50,26 @@ describe("AppController (e2e)", () => {
       })
       .expect(201);
   });
-  it("/user/signup (GET)", () => {
+  it("get the user /user/signup (GET)", () => {
     const path = "/user/getByEmail/" + randomUser + "@mail.com";
-    console.log(path);
-
     return request(app.getHttpServer())
       .get(path)
       .set("Auth", "abc")
       .expect(200);
     //TODO: tornar resposta sencera
+  });
+  it("update the user /user/signup (PATCH)", () => {
+    return request(app.getHttpServer())
+      .patch("/user/update")
+      .send({
+        name: randomUser,
+        email: `${randomUser}@mail.com`,
+        password: `${randomUser}`,
+        newName: randomUser + "1",
+        newPassword: `${randomUser}1`,
+        newEmail: `${randomUser}@gmail.com`,
+      })
+      .expect(200);
   });
 
   //afegir delete user

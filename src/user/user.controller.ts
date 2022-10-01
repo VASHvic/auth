@@ -62,14 +62,7 @@ export class UserController {
     try {
       return await this.userService.signUp(dto);
     } catch (e) {
-      let errorMesage: string;
-      if (e.code === 11000) {
-        errorMesage = `A User with ${Object.entries(
-          e.keyValue,
-        )} already exists`;
-      }
-      const error = new BadRequestException(errorMesage ?? "Unknow Error");
-      await this.userErrorService.saveError(error);
+      const error = await this.userErrorService.saveError(e);
       throw error;
     }
   }
