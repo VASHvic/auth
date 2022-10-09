@@ -1,4 +1,4 @@
-name: Release node
+name: Semantic release
 on:
   push:
     branches:

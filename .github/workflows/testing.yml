@@ -1,4 +1,4 @@
-name: Deployment Pipeline
+name: Testing action
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       - name: e2e test
         run: npm run e2e
         env:
-          MONGO_URI: $ {{ secrets.MONGO_URI}}
+          MONGO_URI: ${{ secrets.MONGO_URI}}
           API_KEY: ${{ secrets.API_KEY }}
           JWT_EXPIRATION_TIME: ${{ secrets.JWT_EXPIRATION_TIME }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
