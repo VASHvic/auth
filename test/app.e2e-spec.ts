@@ -2,10 +2,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "./../src/app.module";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import config from "src/config";
-import { MongooseModule } from "@nestjs/mongoose";
-import { response } from "express";
 
 describe("Starting App", () => {
   let app: INestApplication;
@@ -16,21 +12,7 @@ describe("Starting App", () => {
   jest.setTimeout(120000);
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        AppModule,
-        ConfigModule.forRoot({
-          envFilePath: ".env",
-          load: [config],
-          isGlobal: true,
-        }),
-        MongooseModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: async (config: ConfigService) => ({
-            uri: config.get<string>("MONGO_URI"),
-          }),
-        }),
-      ],
+      imports: [AppModule],
     }).compile();
 
     app = moduleRef.createNestApplication();

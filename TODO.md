@@ -13,3 +13,5 @@
 - posarli fastify ( problemes de versió, crec que per passport, deixar per a més avant)
 
 ## hard
+
+- no puc pasarli variables env a la github action de 2e2
