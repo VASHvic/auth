@@ -17,7 +17,7 @@
     "test": "jest --runInBand --detectOpenHandles  --config ./jest.config.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "e2e": "jest --runInBand --detectOpenHandles --forceExit --config ./test/jest-e2e.json"
+    "e2e": "jest --runInBand --forceExit --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^9.1.2",

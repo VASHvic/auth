@@ -5,7 +5,7 @@ import { AppModule } from "./../src/app.module";
 
 describe("Starting App", () => {
   let app: INestApplication;
-  let randomUser = (Math.random() + 1).toString(36).substring(7);
+  const randomUser = (Math.random() + 1).toString(36).substring(7);
   let httpServer: any;
   //mirar si pug afafar la conexió com michael guay
 
@@ -29,11 +29,9 @@ describe("Starting App", () => {
       const response = await request(httpServer)
         .get("/user/get")
         .set("Auth", "abc");
-
       expect(response.status).toBe(200);
     });
   });
-
   describe("USER create a user /user/signup (POST)", () => {
     it("should create  a user", async () => {
       const response = await request(httpServer)
@@ -46,6 +44,10 @@ describe("Starting App", () => {
       //arreplegar id y pasarliu a getById
 
       expect(response.status).toBe(201);
+      expect(response.body).toMatchObject({
+        name: randomUser,
+        email: `${randomUser}@mail.com`,
+      });
     });
   });
 
@@ -59,6 +61,14 @@ describe("Starting App", () => {
         });
 
       expect(response.status).toBe(201);
+      expect(response.body).toMatchObject({
+        access_token: expect.any(String),
+        user: {
+          _id: expect.any(String),
+          name: randomUser,
+          email: `${randomUser}@mail.com`,
+        },
+      });
     });
   });
 
@@ -76,7 +86,7 @@ describe("Starting App", () => {
     //TODO: tornar resposta sencera
   });
   describe("USER update the user just created /user/update (PATCH)", () => {
-    it("should delete the user", async () => {
+    it("should uypdate the user", async () => {
       const response = await request(httpServer)
         .patch("/user/update")
         .send({
@@ -88,6 +98,31 @@ describe("Starting App", () => {
           newEmail: `${randomUser}@gmail.com`,
         });
       expect(response.status).toBe(200);
+    });
+  });
+
+  describe("USER delete the user just updated /user/delete (DELETE)", () => {
+    it("should fail to delete the user when no invalid password", async () => {
+      const response = await request(httpServer)
+        .delete("/user/delete")
+        .send({
+          name: randomUser + "1",
+          email: `${randomUser}@gmail.com`,
+          password: `BAD${randomUser}1`,
+        });
+      expect(response.status).toBe(401);
+    });
+
+    it("should delete the user", async () => {
+      const response = await request(httpServer)
+        .delete("/user/delete")
+        .send({
+          name: randomUser + "1",
+          email: `${randomUser}@gmail.com`,
+          password: `${randomUser}1`,
+        });
+      expect(response.status).toBe(200);
+      expect(response.text).toBe("true");
     });
   });
 

@@ -6,6 +6,7 @@ import { UpdateUserDto } from "src/dto/updateUserDto";
 import { User, UserDocument } from "./schemas/user.schema";
 import * as bycript from "bcrypt";
 import { SafeUserType, UserType } from "src/auth/types/types";
+import { DeleteUserDto } from "src/dto/deleteUser.dto";
 
 @Injectable()
 export class UserService {
@@ -45,5 +46,12 @@ export class UserService {
     });
     const { password, __v, ...rta } = updatedUser.toJSON();
     return rta as SafeUserType;
+  }
+
+  public async deleteUser(dto: DeleteUserDto): Promise<boolean> {
+    const { deletedCount } = await this.userModel
+      .deleteOne({ email: dto.email })
+      .exec();
+    return deletedCount > 0;
   }
 }

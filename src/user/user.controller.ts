@@ -1,13 +1,14 @@
 import {
-  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   UseGuards,
 } from "@nestjs/common";
+import { DeleteUserDto } from "src/dto/deleteUser.dto";
 import { Public } from "../auth/decorators/public.decorator";
 import { ApiKeyGuard } from "../auth/guards/api-key.guard";
 import { LocalAuthGuard } from "../auth/guards/local-auth.guard";
@@ -58,12 +59,20 @@ export class UserController {
     return this.userService.update(dto);
   }
 
+  @UseGuards(LocalAuthGuard)
+  @Delete("delete")
+  public async deleteUser(@Body() dto: DeleteUserDto): Promise<boolean> {
+    return this.userService.deleteUser(dto);
+  }
+
   @Post("signUp")
   @Public()
   public async signUp(@Body() dto: createUserDto): Promise<SafeUserType> {
     try {
       return await this.userService.signUp(dto);
     } catch (e) {
+      console.log(e);
+
       const error = await this.userErrorService.saveError(e);
       throw error;
     }
