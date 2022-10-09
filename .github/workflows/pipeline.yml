@@ -6,9 +6,12 @@ on:
       - "test"
       - "master"
 jobs:
-  create-envfile:
+  deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
@@ -20,13 +23,13 @@ jobs:
           envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
           file_name: .env
           fail_on_empty: true
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Install dependencies
+        uses: lewagon/wait-on-check-action@v1.0.0
+        with:
+          ref: master
+          check-name: Create .env file
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 20
         run: npm i
       - name: e2e test
         run: npm run e2e
