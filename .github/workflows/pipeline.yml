@@ -5,7 +5,11 @@ on:
     branches:
       - "test"
       - "master"
-
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+  MONGO_URI: $ {{ secrets.MONGO_URI }}
+  JWT_EXPIRATION_TIME: ${{ secrets.JWT_EXPIRATION_TIME }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
