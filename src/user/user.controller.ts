@@ -32,6 +32,7 @@ export class UserController {
   public async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
+
   @UseGuards(ApiKeyGuard)
   @Get("getById/:id")
   public async getUserById(
@@ -50,6 +51,7 @@ export class UserController {
     const { password, __v, ...rta } = user;
     return rta;
   }
+
   @UseGuards(LocalAuthGuard)
   @Patch("update")
   public async updateUser(@Body() dto: UpdateUserDto): Promise<SafeUserType> {
