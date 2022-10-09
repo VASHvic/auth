@@ -15,3 +15,4 @@
 ## hard
 
 - no puc pasarli variables env a la github action de 2e2
+- usar un pas de la action pa crear una bd???
