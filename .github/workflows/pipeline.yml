@@ -6,13 +6,10 @@ on:
       - "test"
       - "master"
 jobs:
-  deploy:
+  create-envfile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Create .env file
+      - name: Make envfile
         uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_DEBUG: false
@@ -23,13 +20,20 @@ jobs:
           envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
           file_name: .env
           fail_on_empty: true
-      - name: Install dependencies
-        uses: lewagon/wait-on-check-action@v1.0.0
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
         with:
-          ref: master
-          check-name: Create .env file
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 20
+          fetch-depth: 0
+      - name: Wait For Other Pipelines
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: otto-de/github-actions-wait@v1.0
+        with:
+          step-name: "Wait For Other Pipelines"
+      - name: Install dependencies
         run: npm i
       - name: e2e test
         run: npm run e2e
