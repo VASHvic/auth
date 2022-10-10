@@ -21,7 +21,7 @@ export class UserService {
     return rta as SafeUserType;
   }
   public async findAll() {
-    return this.userModel.find().exec();
+    return this.userModel.find().exec(); //llevar _v
   }
 
   public async findById(id: string): Promise<User> {

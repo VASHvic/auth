@@ -1,7 +1,5 @@
 import { AuthService } from "./services/auth.service";
-import { LocalStrategy } from "./strategies/local.strategy";
 import { AuthController } from "./auth.controller";
-import { JWTStrategy } from "./strategies/jwt.strategy";
 import { Test, TestingModule } from "@nestjs/testing";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { UserService } from "src/user/user.service";
@@ -9,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { getModelToken } from "@nestjs/mongoose";
 import { User, UserDocument } from "src/user/schemas/user.schema";
 import { Model } from "mongoose";
+import { newMockUser, randomMockUser } from "test/e2e.constants";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -44,4 +43,6 @@ describe("AuthController", () => {
   it("should be defined", () => {
     expect(controller).toBeDefined();
   });
+
+  //TODO: mirar com testejar lo del token y tal
 });

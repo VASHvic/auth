@@ -14,8 +14,9 @@ export class AuthController {
     @Req() req: Request,
   ): Promise<{ user: SafeUserType; access_token: string }> {
     // EL Guard pilla el body y combroba els camps contra la BD
-    const user = req.user as UserType;
-    const token = this.authService.generateJWT(user);
-    return token;
+    return this.generateTokenForUser(req.user as UserType);
+  }
+  public generateTokenForUser(user: UserType) {
+    return this.authService.generateJWT(user);
   }
 }

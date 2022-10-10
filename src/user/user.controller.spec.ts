@@ -50,4 +50,13 @@ describe("UserController", () => {
   it("should be defined", () => {
     expect(userController).toBeDefined();
   });
+
+  // TODO:mirar pk no va y com es testen el guards
+
+  // it("should ensure the ApiKeyGuard is applied to the controller", async () => {
+  //   const guards = Reflect.getMetadata("__guards__", userController);
+  //   const guard = new guards[0]();
+
+  //   expect(guard).toBeInstanceOf(ApiKeyGuard);
+  // });
 });
