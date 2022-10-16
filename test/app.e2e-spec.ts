@@ -13,6 +13,7 @@ import {
 describe("Starting App", () => {
   let app: INestApplication;
   let httpServer: any;
+  let token;
   //mirar si pug afafar la conexió com michael guay
 
   jest.setTimeout(120000);
@@ -68,7 +69,7 @@ describe("Starting App", () => {
       const response = await request(httpServer)
         .post("/auth/login")
         .send(newMockUser);
-
+      token = response.body.access_token;
       expect(response.status).toBe(201);
       expect(response.body).toMatchObject({
         access_token: expect.any(String),
@@ -89,10 +90,12 @@ describe("Starting App", () => {
       expect(response.body).toMatchObject(newMockUserNoPass);
     });
   });
+
   describe("USER update the user just created /user/update (PATCH)", () => {
-    it("should uypdate the user", async () => {
+    it("should update the user", async () => {
       const response = await request(httpServer)
         .patch("/user/update")
+        .set("Authorization", `Bearer ${token}`)
         .send(updatedMockUserDto);
       expect(response.status).toBe(200);
     });
@@ -107,6 +110,7 @@ describe("Starting App", () => {
     it("should delete the user", async () => {
       const response = await request(httpServer)
         .delete("/user/delete")
+        .set("Authorization", `Bearer ${token}`)
         .send(updatedMockUser);
       expect(response.status).toBe(200);
       expect(response.text).toBe("true");

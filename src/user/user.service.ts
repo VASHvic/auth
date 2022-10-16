@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { createUserDto } from "src/dto/createUser.dto";
@@ -7,10 +7,14 @@ import { User, UserDocument } from "./schemas/user.schema";
 import * as bycript from "bcrypt";
 import { SafeUserType, UserType } from "src/auth/types/types";
 import { DeleteUserDto } from "src/dto/deleteUser.dto";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   public async signUp(dto: createUserDto): Promise<SafeUserType> {
     const newUser = new this.userModel(dto);
@@ -33,17 +37,30 @@ export class UserService {
     return user ? (user.toJSON() as UserType) : null;
   }
 
-  public async update(changes: UpdateUserDto) {
-    const { _id } = (await this.findByEmail(changes.email)) as UserType;
+  public async update(changes: UpdateUserDto, auth: string) {
+    const token = auth.split(" ")[1];
+    const { sub } = this.jwtService.decode(token);
+    const userFromToken = await this.findById(sub);
+
+    const userFromEmail = (await this.findByEmail(changes.email)) as UserType;
+    if (
+      JSON.stringify(userFromToken) !== JSON.stringify(userFromEmail) // diuen que millorable
+    ) {
+      throw new Error("Authorization token doesnt belong to User");
+    }
     const updated = {} as User;
     if (changes.newName) updated.name = changes.newName;
     if (changes.newPassword)
       updated.password = await bycript.hash(changes.newPassword, 10);
     if (changes.newEmail) updated.email = changes.newEmail;
 
-    const updatedUser = await this.userModel.findByIdAndUpdate(_id, updated, {
-      returnOriginal: false,
-    });
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      userFromEmail._id,
+      updated,
+      {
+        returnOriginal: false,
+      },
+    );
     const { password, __v, ...rta } = updatedUser.toJSON();
     return rta as SafeUserType;
   }

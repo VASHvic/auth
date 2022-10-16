@@ -3,11 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
+  Headers,
   Param,
   Patch,
   Post,
   UseGuards,
 } from "@nestjs/common";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { DeleteUserDto } from "src/dto/deleteUser.dto";
 import { Public } from "../auth/decorators/public.decorator";
 import { ApiKeyGuard } from "../auth/guards/api-key.guard";
@@ -53,12 +56,23 @@ export class UserController {
     return rta;
   }
 
+  @UseGuards(JwtAuthGuard)
   @UseGuards(LocalAuthGuard)
   @Patch("update")
-  public async updateUser(@Body() dto: UpdateUserDto): Promise<SafeUserType> {
-    return this.userService.update(dto);
-  }
+  public async updateUser(
+    @Body() dto: UpdateUserDto,
+    @Headers() headers,
+  ): Promise<SafeUserType> {
+    const { authorization } = headers;
+    try {
+      return await this.userService.update(dto, authorization);
+    } catch (e) {
+      const error = await this.userErrorService.saveError(e);
 
+      throw error;
+    }
+  }
+  @UseGuards(JwtAuthGuard)
   @UseGuards(LocalAuthGuard)
   @Delete("delete")
   public async deleteUser(@Body() dto: DeleteUserDto): Promise<boolean> {
@@ -72,7 +86,6 @@ export class UserController {
       return await this.userService.signUp(dto);
     } catch (e) {
       console.log(e);
-
       const error = await this.userErrorService.saveError(e);
       throw error;
     }

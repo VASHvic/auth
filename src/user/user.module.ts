@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ErrorSchema } from "./schemas/user-error.schema";
 import { User, UserSchema } from "./schemas/user.schema";
@@ -13,7 +14,7 @@ import { UserService } from "./user.service";
       { name: "userError", schema: ErrorSchema },
     ]),
   ],
-  providers: [UserService, UserErrorService],
+  providers: [UserService, UserErrorService, JwtService],
   controllers: [UserController],
   exports: [UserService, MongooseModule],
 })

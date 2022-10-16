@@ -33,16 +33,4 @@ describe("AuthService", () => {
   it("should be defined", () => {
     expect(service).toBeDefined();
   });
-  // it('should return a user doc', async () => {
-  //   // arrange
-  //   const user = new User();
-  //   const userID = '12345';
-  //   const spy = jest
-  //     .spyOn(mockUserModel, 'findById') // <- spy on what you want
-  //     .mockResolvedValue(user as UserDocument); // <- Set your resolved value
-  //   // act
-  //   await mockRepository.findOneById(userID);
-  //   // assert
-  //   expect(spy).toBeCalled();
-  // });
 });

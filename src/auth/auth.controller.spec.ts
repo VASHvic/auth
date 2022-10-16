@@ -7,7 +7,6 @@ import { JwtService } from "@nestjs/jwt";
 import { getModelToken } from "@nestjs/mongoose";
 import { User, UserDocument } from "src/user/schemas/user.schema";
 import { Model } from "mongoose";
-import { newMockUser, randomMockUser } from "test/e2e.constants";
 
 describe("AuthController", () => {
   let controller: AuthController;

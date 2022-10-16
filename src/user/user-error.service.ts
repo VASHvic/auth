@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, HttpException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserErrorDocument } from "./schemas/user-error.schema";
@@ -13,7 +13,7 @@ export class UserErrorService {
     if (e.code === 11000) {
       errorMesage = `A User with ${Object.entries(e.keyValue)} already exists`;
     }
-    const error = new BadRequestException(errorMesage ?? "Unknow Error");
+    const error = new HttpException(errorMesage ?? e.message, e.status);
     const newUserError = new this.userErrorModel({ error });
     await newUserError.save();
     return error;

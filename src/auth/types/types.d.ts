@@ -2,6 +2,8 @@ import { User } from "src/user/schemas/user.schema";
 
 export interface PayloadToken {
   sub: string;
+  iat: number;
+  exp: number;
 }
 export type UserType = {
   _id: string;
